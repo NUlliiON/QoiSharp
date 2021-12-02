@@ -7,6 +7,7 @@
 		<Nullable>enable</Nullable>
 		
 		<Authors>Eugene Antonov</Authors>
+		<PackageVersion>1.0.0-beta.1</PackageVersion>
 		<PackageProjectUrl>https://github.com/NUlliiON/QoiSharp</PackageProjectUrl>
 		<PackageLicenseUrl>https://github.com/NUlliiON/QoiSharp/blob/master/LICENSE</PackageLicenseUrl>
 		<PackageTags>QOI Fast Image Jpg Jpeg Bitmap Png Net6</PackageTags>

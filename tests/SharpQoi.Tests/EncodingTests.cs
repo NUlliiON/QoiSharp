@@ -25,7 +25,7 @@ public class EncodingTests
         }
 
         // Act
-        byte[] qoiData = Qoi.Encode(pngData, new QoiDescription(850, 566, Channels: 4, ColorSpace: 0));
+        byte[] qoiData = QoiEncoder.Encode(pngData, new QoiDescription(850, 566, Channels: 4, ColorSpace: 0));
         
         // Assert
         qoiData.Should().HaveCountGreaterThan(0);
@@ -39,7 +39,7 @@ public class EncodingTests
         byte[] qoiData = await File.ReadAllBytesAsync(qoiFileName);
         
         // Act
-        var decodingResult = Qoi.Decode(qoiData);
+        var decodingResult = QoiDecoder.Decode(qoiData);
 
         // Assert
         const string pngFileName = "Resources\\Images\\file_example_PNG_500kB.png";
