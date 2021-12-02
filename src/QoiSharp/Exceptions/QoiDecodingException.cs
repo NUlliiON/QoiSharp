@@ -1,4 +1,4 @@
-﻿namespace SharpQoi.Exceptions;
+﻿namespace QoiSharp.Exceptions;
 
 public class QoiDecodingException : Exception
 {

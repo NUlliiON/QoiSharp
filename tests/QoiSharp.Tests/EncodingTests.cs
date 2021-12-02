@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -5,7 +6,7 @@ using FluentAssertions;
 using StbImageSharp;
 using Xunit;
 
-namespace SharpQoi.Tests;
+namespace QoiSharp.Tests;
 
 public class EncodingTests
 {
@@ -25,7 +26,7 @@ public class EncodingTests
         }
 
         // Act
-        byte[] qoiData = QoiEncoder.Encode(new QoiImage(pngData, 850, 566, channels: 4, colorSpace: 0));
+        byte[] qoiData = QoiEncoder.Encode(new QoiImage(pngData, 850, 566, channels: 4));
         
         // Assert
         qoiData.Should().HaveCountGreaterThan(0);

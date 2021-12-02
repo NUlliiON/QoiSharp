@@ -13,8 +13,9 @@
 		<PackageTags>QOI Fast Image Jpg Jpeg Bitmap Png Net6</PackageTags>
 		<RepositoryUrl>https://github.com/NUlliiON/QoiSharp</RepositoryUrl>
 		<Description>QoiSharp is an implementation of the QOI format for fast lossless image compression</Description>
-		<PackageId>SharpQoi</PackageId>
-		<Title>SharpQoi</Title>
+		<PackageId>QoiSharp</PackageId>
+		<Title>QoiSharp</Title>
+		<RootNamespace>QoiSharp</RootNamespace>
 	</PropertyGroup>
 
 </Project>

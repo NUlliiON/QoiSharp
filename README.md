@@ -21,15 +21,19 @@ Install stable releases via Nuget
 ### Encoding
 ```csharp
 byte[] data = GetPngData();
-int imgWidth = 1920;
-int imgHeight = 1920;
-int imgChannels = 3;
-byte[] encoded = QoiEncoder.Encode(data, new QoiDescription(imgWidth, imgHeight, imgChannels))
+int width = 1920;
+int height = 1080;
+int channels = 4;
+byte[] qoiData = QoiEncoder.Encode(new QoiImage(pngData, width, height, channels));
 ```
 ### Decoding
 ```csharp
-byte[] encodedData = GetEncodedData();
-QoiImage img = QoiDecoder.Decode(encodedData)
+var qoiImage = QoiDecoder.Decode(qoiData);
+Console.WriteLine($"Width: {qoiImage.Width}");
+Console.WriteLine($"Height: {qoiImage.Height}");
+Console.WriteLine($"Channels: {qoiImage.Channels}");
+Console.WriteLine($"Color space: {qoiImage.ColorSpace}");
+Console.WriteLine($"Data length: {qoiImage.Pixels.Length}");
 ```
 ## Usage example
 ```csharp

@@ -4,11 +4,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8DAE8BD0-0B6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{74B67821-2D7B-4AD1-9018-4667729E741C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpQoi", "src\SharpQoi\SharpQoi.csproj", "{EF06B3E0-386A-4B58-87DE-1E37D1224284}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QoiSharp", "src\QoiSharp\QoiSharp.csproj", "{EF06B3E0-386A-4B58-87DE-1E37D1224284}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpQoi.Tests", "tests\SharpQoi.Tests\SharpQoi.Tests.csproj", "{A0826EB2-D149-4C0F-8AA6-1F5F4C99A0F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QoiSharp.Tests", "tests\QoiSharp.Tests\QoiSharp.Tests.csproj", "{A0826EB2-D149-4C0F-8AA6-1F5F4C99A0F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpQoi.Benchmarks", "tests\SharpQoi.Benchmarks\SharpQoi.Benchmarks.csproj", "{716F2F1F-C2DE-48D3-9305-213A67DD5B14}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QoiSharp.Benchmarks", "tests\QoiSharp.Benchmarks\QoiSharp.Benchmarks.csproj", "{716F2F1F-C2DE-48D3-9305-213A67DD5B14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

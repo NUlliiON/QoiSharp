@@ -1,6 +1,6 @@
-﻿using SharpQoi.Exceptions;
+﻿using QoiSharp.Exceptions;
 
-namespace SharpQoi;
+namespace QoiSharp;
 
 /// <summary>
 /// QOI encoder.

@@ -1,4 +1,4 @@
-﻿namespace SharpQoi;
+﻿namespace QoiSharp;
 
 /// <summary>
 /// QOI image.

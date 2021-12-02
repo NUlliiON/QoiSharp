@@ -1,4 +1,4 @@
-﻿namespace SharpQoi;
+﻿namespace QoiSharp;
 
 public enum ColorSpace : byte
 {
