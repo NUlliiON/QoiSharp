@@ -24,12 +24,12 @@ byte[] data = GetPngData();
 int imgWidth = 1920;
 int imgHeight = 1920;
 int imgChannels = 3;
-byte[] encoded = Qoi.Encode(data, new QoiDescription(imgWidth, imgHeight, imgChannels))
+byte[] encoded = QoiEncoder.Encode(data, new QoiDescription(imgWidth, imgHeight, imgChannels))
 ```
 ### Decoding
 ```csharp
 byte[] encodedData = GetEncodedData();
-QoiDecodingResult decodingResult = Qoi.Decode(encodedData)
+QoiDecodingResult decodingResult = QoiDecoder.Decode(encodedData)
 ```
 ## Usage example
 ```csharp

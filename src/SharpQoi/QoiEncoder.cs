@@ -2,9 +2,6 @@
 
 namespace SharpQoi;
 
-public record struct QoiDescription(int Width, int Height, byte Channels, byte ColorSpace = 0);
-public record QoiDecodingResult(byte[] Data, byte Channels, byte ColorSpace);
-
 /// <summary>
 /// QOI encoder.
 /// </summary>
@@ -13,33 +10,29 @@ public static class QoiEncoder
     /// <summary>
     /// Encodes pixel data into QOI.
     /// </summary>
-    /// <param name="pixels">Pixel data</param>
-    /// <param name="description">Image information</param>
-    /// <returns></returns>
+    /// <param name="pixels">QOI image.</param>
+    /// <returns>Encoded image.</returns>
     /// <exception cref="QoiEncodingException">Thrown when image information is invalid.</exception>
-    public static byte[] Encode(byte[] pixels, QoiDescription description)
+    public static byte[] Encode(QoiImage image)
     {
-        if (description.Width is 0 or > 0xFFFF)
+        if (image.Width is 0 or > 0xFFFF)
         {
-            throw new QoiEncodingException($"Invalid width: {description.Width}");
+            throw new QoiEncodingException($"Invalid width: {image.Width}");
         }
-        if (description.Height is 0 or > 0xFFFF)
+        if (image.Height is 0 or > 0xFFFF)
         {
-            throw new QoiEncodingException($"Invalid height: {description.Height}");
+            throw new QoiEncodingException($"Invalid height: {image.Height}");
         }
-        if (description.Channels is not 3 and not 4)
+        if (image.Channels is not 3 and not 4)
         {
-            throw new QoiEncodingException($"Invalid number of channels: {description.Channels}");
-        }
-        if ((0xf0 & description.ColorSpace) != 0)
-        {
-            throw new QoiEncodingException($"Invalid color space: 0x${description.ColorSpace:x8}");
+            throw new QoiEncodingException($"Invalid number of channels: {image.Channels}");
         }
 
-        int width = description.Width;
-        int height = description.Height;
-        byte channels = description.Channels;
-        byte colorSpace = description.ColorSpace;
+        int width = image.Width;
+        int height = image.Height;
+        byte channels = image.Channels;
+        byte colorSpace = (byte)image.ColorSpace;
+        byte[] pixels = image.Pixels;
         
         byte[] bytes = new byte[QoiCodec.HeaderSize + QoiCodec.Padding + width * height * (channels + 1)];
 
@@ -63,20 +56,20 @@ public static class QoiEncoder
 
         int[] index = new int[64];
 
-        int run = 0|0;
+        int run = 0;
         // TODO: use struct instead?
-        byte rPrev = 0|0;
-        byte gPrev = 0|0;
-        byte bPrev = 0|0;
-        byte aPrev = 255|0;
-        int vPrev = 255|0;
+        byte rPrev = 0;
+        byte gPrev = 0;
+        byte bPrev = 0;
+        byte aPrev = 255;
+        int vPrev = 255;
         
         // TODO: use struct instead?
-        byte r = 0|0;
-        byte g = 0|0;
-        byte b = 0|0;
-        byte a = 255|0;
-        int v = 255|0;
+        byte r = 0;
+        byte g = 0;
+        byte b = 0;
+        byte a = 255;
+        int v = 255;
         
         int p = QoiCodec.HeaderSize;
 
@@ -148,7 +141,6 @@ public static class QoiEncoder
                             bytes[p++] = (byte)(QoiCodec.Diff8 | ((vr + 2) << 4) | (vg + 2) << 2 | (vb + 2));
                         }
                         else if (va == 0 &&
-                                 vr is > -17 and < 16 &&
                                  vg is > -9 and < 8 && 
                                  vb is > -9 and < 8)
                         {

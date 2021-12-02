@@ -13,7 +13,7 @@ public static class QoiDecoder
     /// <param name="data">QOI data</param>
     /// <returns>Decoding result.</returns>
     /// <exception cref="QoiDecodingException">Thrown when data is invalid.</exception>
-    public static QoiDecodingResult Decode(byte[] data)
+    public static QoiImage Decode(byte[] data)
     {
         if (data.Length < QoiCodec.HeaderSize + QoiCodec.Padding)
         {
@@ -29,7 +29,7 @@ public static class QoiDecoder
         int width = data[4] << 24 | data[5] << 16 | data[6] << 8 | data[7];
         int height = data[8] << 24 | data[9] << 16 | data[10] << 8 | data[11];
         byte channels = data[12];
-        byte colorSpace = data[13];
+        var colorSpace = (ColorSpace)data[13];
 
         if (width == 0)
         {
@@ -42,10 +42,6 @@ public static class QoiDecoder
         if (channels != 3 && channels != 4)
         {
             throw new QoiDecodingException($"Invalid number of channels: {channels}");
-        }
-        if ((0xf0 & colorSpace) != 0)
-        {
-            throw new QoiDecodingException($"illegal color space: 0x${colorSpace:x8}");
         }
 
         byte[] pixels = new byte[width * height * 4];
@@ -151,6 +147,6 @@ public static class QoiDecoder
             pixels[pxPos + 3] = a;
         }
 
-        return new QoiDecodingResult(pixels, channels, colorSpace);
+        return new QoiImage(pixels, width, height, channels, colorSpace);
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace SharpQoi;
 
-public enum ColorSpace
+public enum ColorSpace : byte
 {
-    SRgb,
-    SRgbLinearAlpha,
-    Linear
+    SRgb = 0,
+    SRgbLinearAlpha = 1,
+    Linear = 2
 }
