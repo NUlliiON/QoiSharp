@@ -29,7 +29,7 @@ byte[] encoded = QoiEncoder.Encode(data, new QoiDescription(imgWidth, imgHeight,
 ### Decoding
 ```csharp
 byte[] encodedData = GetEncodedData();
-QoiDecodingResult decodingResult = QoiDecoder.Decode(encodedData)
+QoiImage img = QoiDecoder.Decode(encodedData)
 ```
 ## Usage example
 ```csharp
