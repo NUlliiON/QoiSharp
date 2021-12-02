@@ -40,7 +40,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\src\SharpQoi\SharpQoi.csproj" />
+	  <ProjectReference Include="..\..\src\QoiSharp\QoiSharp.csproj" />
 	</ItemGroup>
 
 </Project>

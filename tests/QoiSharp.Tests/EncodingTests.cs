@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -5,7 +6,7 @@ using FluentAssertions;
 using StbImageSharp;
 using Xunit;
 
-namespace SharpQoi.Tests;
+namespace QoiSharp.Tests;
 
 public class EncodingTests
 {
@@ -25,7 +26,7 @@ public class EncodingTests
         }
 
         // Act
-        byte[] qoiData = Qoi.Encode(pngData, new QoiDescription(850, 566, Channels: 4, ColorSpace: 0));
+        byte[] qoiData = QoiEncoder.Encode(new QoiImage(pngData, 850, 566, channels: 4));
         
         // Assert
         qoiData.Should().HaveCountGreaterThan(0);
@@ -39,14 +40,14 @@ public class EncodingTests
         byte[] qoiData = await File.ReadAllBytesAsync(qoiFileName);
         
         // Act
-        var decodingResult = Qoi.Decode(qoiData);
+        var qoiImage = QoiDecoder.Decode(qoiData);
 
         // Assert
         const string pngFileName = "Resources\\Images\\file_example_PNG_500kB.png";
         byte[] pngData = ImageResult.FromMemory(await File.ReadAllBytesAsync(pngFileName), ColorComponents.RedGreenBlueAlpha).Data;
-        Assert.True(decodingResult.Data.SequenceEqual(pngData));
-        decodingResult.Channels.Should().Be(3);
-        decodingResult.ColorSpace.Should().Be(0);
+        Assert.True(qoiImage.Pixels.SequenceEqual(pngData));
+        qoiImage.Channels.Should().Be(3);
+        qoiImage.ColorSpace.Should().Be(0);
     }
 
     private void SomeExperiments()
