@@ -1,7 +1,7 @@
 
-# SharpQoi
+# QoiSharp
 
-### SharpQoi is an implementation of the [QOI](https://github.com/phoboslab/qoi) format for fast, lossless image compression
+### QoiSharp is an implementation of the [QOI](https://github.com/phoboslab/qoi) format for fast, lossless image compression
 
 Supported functionality:
 - [x] Encoding
@@ -14,7 +14,7 @@ Install stable releases via Nuget
 
 | Package Name                   | Release (NuGet) |
 |--------------------------------|-----------------|
-| `SharpQoi`         | [![NuGet](https://img.shields.io/nuget/v/SharpQoi.svg)](https://www.nuget.org/packages/SharpQoi/)] (release tomorrow)
+| `QoiSharp`         | [![NuGet](https://img.shields.io/nuget/v/QoiSharp.svg)](https://www.nuget.org/packages/QoiSharp/)] (release tomorrow)
 
 ## API
 
@@ -41,4 +41,4 @@ QoiImage img = QoiDecoder.Decode(encodedData)
 
 ## License
 
-SharpQoi is licensed under the [MIT](LICENSE) license.
+QoiSharp is licensed under the [MIT](LICENSE) license.
