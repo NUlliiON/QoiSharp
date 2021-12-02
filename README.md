@@ -14,7 +14,7 @@ Install stable releases via Nuget
 
 | Package Name                   | Release (NuGet) |
 |--------------------------------|-----------------|
-| `QoiSharp`         | [![NuGet](https://img.shields.io/nuget/v/QoiSharp.svg)](https://www.nuget.org/packages/QoiSharp/)] (release tomorrow)
+| `QoiSharp`         | [![NuGet](https://img.shields.io/nuget/v/QoiSharp.svg)](https://www.nuget.org/packages/QoiSharp/)
 
 ## API
 

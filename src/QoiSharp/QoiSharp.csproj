@@ -9,7 +9,6 @@
 		<Authors>Eugene Antonov</Authors>
 		<PackageVersion>1.0.0-beta.2</PackageVersion>
 		<PackageProjectUrl>https://github.com/NUlliiON/QoiSharp</PackageProjectUrl>
-		<PackageLicenseUrl>https://github.com/NUlliiON/QoiSharp/blob/master/LICENSE</PackageLicenseUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageTags>QOI Fast Image Jpg Jpeg Bitmap Png Net6</PackageTags>
 		<RepositoryUrl>https://github.com/NUlliiON/QoiSharp</RepositoryUrl>
