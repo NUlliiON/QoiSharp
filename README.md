@@ -1,6 +1,7 @@
 
 # QoiSharp
 
+### ✅ **Project status: active**. [What does it mean?](https://github.com/NUlliiON/QoiSharp/docs/project-status.md)
 ### QoiSharp is an implementation of the [QOI](https://github.com/phoboslab/qoi) format for fast, lossless image compression
 
 Supported functionality:
