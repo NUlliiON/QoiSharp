@@ -38,7 +38,7 @@ Console.WriteLine($"Data length: {qoiImage.Pixels.Length}");
 ```
 ## Usage example
 ```csharp
-// There are no examples at the moment
+// There are no examples at the moment. You can check Tests project for more examples.
 ```
 
 ## TODOs
