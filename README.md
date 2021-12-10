@@ -1,5 +1,9 @@
+<h1 align="center">
 
-# QoiSharp
+<img src="https://qoiformat.org/qoi-logo.svg" alt="QoiSharp" width="256"/>
+<br/>
+QoiSharp 
+</h1>
 
 #### ✅ **Project status: active**. [What does it mean?](https://github.com/NUlliiON/QoiSharp/blob/main/docs/project-status.md)
 ### QoiSharp is an implementation of the [QOI](https://github.com/phoboslab/qoi) format for fast, lossless image compression
