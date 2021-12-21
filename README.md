@@ -7,6 +7,7 @@ QoiSharp
 
 #### ✅ **Project status: active**. [What does it mean?](https://github.com/NUlliiON/QoiSharp/blob/main/docs/project-status.md)
 ### QoiSharp is an implementation of the [QOI](https://github.com/phoboslab/qoi) format for fast, lossless image compression
+### Announcement: QOI specification was updated on December 21st, QoiSharp library will be updated shortly.
 
 Supported functionality:
 - [x] Encoding
