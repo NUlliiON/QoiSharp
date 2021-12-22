@@ -12,7 +12,6 @@ QoiSharp
 Supported functionality:
 - [x] Encoding
 - [x] Decoding
-- [ ] Loading image through stbi (currently you can use StbImageSharp)
 
 ## Installation
 
@@ -26,11 +25,11 @@ Install stable releases via Nuget
 
 ### Encoding
 ```csharp
-byte[] data = GetPngData();
+byte[] data = GetRawPixels();
 int width = 1920;
 int height = 1080;
-int channels = 4;
-byte[] qoiData = QoiEncoder.Encode(new QoiImage(pngData, width, height, channels));
+var channels = Channels.RgbWithAlpha;
+byte[] qoiData = QoiEncoder.Encode(new QoiImage(data, width, height, channels));
 ```
 ### Decoding
 ```csharp
@@ -42,12 +41,12 @@ Console.WriteLine($"Color space: {qoiImage.ColorSpace}");
 Console.WriteLine($"Data length: {qoiImage.Pixels.Length}");
 ```
 ## Usage example
-```csharp
-// There are no examples at the moment. You can check Tests project for more examples.
-```
+### Link: https://github.com/NUlliiON/QoiSharp/samples
 
 ## TODOs
+* Streams
 * Benchmarks
+* CLI
 
 ## License
 

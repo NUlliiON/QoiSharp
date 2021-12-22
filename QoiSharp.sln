@@ -8,7 +8,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QoiSharp", "src\QoiSharp\Qo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QoiSharp.Tests", "tests\QoiSharp.Tests\QoiSharp.Tests.csproj", "{A0826EB2-D149-4C0F-8AA6-1F5F4C99A0F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QoiSharp.Benchmarks", "tests\QoiSharp.Benchmarks\QoiSharp.Benchmarks.csproj", "{716F2F1F-C2DE-48D3-9305-213A67DD5B14}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QoiSharp.Cli", "tests\QoiSharp.Cli\QoiSharp.Cli.csproj", "{716F2F1F-C2DE-48D3-9305-213A67DD5B14}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{C5758D16-2607-4D5A-ABB5-27CB1AF7C084}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixLaborsImageSharp_Sample", "samples\SixLaborsImageSharp_Sample\SixLaborsImageSharp_Sample.csproj", "{66D8D823-0E76-4A91-9A94-E664191FEF6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StbImageSharp_Sample", "samples\StbImageSharp_Sample\StbImageSharp_Sample.csproj", "{8001D190-3545-4097-8EC5-E1CFC84C965D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,10 +34,20 @@ Global
 		{716F2F1F-C2DE-48D3-9305-213A67DD5B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{716F2F1F-C2DE-48D3-9305-213A67DD5B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{716F2F1F-C2DE-48D3-9305-213A67DD5B14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66D8D823-0E76-4A91-9A94-E664191FEF6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66D8D823-0E76-4A91-9A94-E664191FEF6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66D8D823-0E76-4A91-9A94-E664191FEF6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66D8D823-0E76-4A91-9A94-E664191FEF6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8001D190-3545-4097-8EC5-E1CFC84C965D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8001D190-3545-4097-8EC5-E1CFC84C965D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8001D190-3545-4097-8EC5-E1CFC84C965D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8001D190-3545-4097-8EC5-E1CFC84C965D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EF06B3E0-386A-4B58-87DE-1E37D1224284} = {8DAE8BD0-0B60-4654-969B-065257AE4568}
 		{A0826EB2-D149-4C0F-8AA6-1F5F4C99A0F9} = {74B67821-2D7B-4AD1-9018-4667729E741C}
 		{716F2F1F-C2DE-48D3-9305-213A67DD5B14} = {74B67821-2D7B-4AD1-9018-4667729E741C}
+		{66D8D823-0E76-4A91-9A94-E664191FEF6F} = {C5758D16-2607-4D5A-ABB5-27CB1AF7C084}
+		{8001D190-3545-4097-8EC5-E1CFC84C965D} = {C5758D16-2607-4D5A-ABB5-27CB1AF7C084}
 	EndGlobalSection
 EndGlobal

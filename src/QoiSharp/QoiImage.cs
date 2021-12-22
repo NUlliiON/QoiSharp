@@ -1,11 +1,16 @@
-﻿namespace QoiSharp;
+﻿using QoiSharp.Codec;
+
+namespace QoiSharp;
 
 /// <summary>
 /// QOI image.
 /// </summary>
 public class QoiImage
 {
-    public byte[] Pixels { get; }
+    /// <summary>
+    /// Raw pixel data.
+    /// </summary>
+    public byte[] Data { get; }
     
     /// <summary>
     /// Image width.
@@ -20,7 +25,7 @@ public class QoiImage
     /// <summary>
     /// Channels.
     /// </summary>
-    public byte Channels { get; }
+    public Channels Channels { get; }
     
     /// <summary>
     /// Color space.
@@ -30,9 +35,9 @@ public class QoiImage
     /// <summary>
     /// Default constructor.
     /// </summary>
-    public QoiImage(byte[] pixels, int width, int height, byte channels, ColorSpace colorSpace = ColorSpace.SRgb)
+    public QoiImage(byte[] data, int width, int height, Channels channels, ColorSpace colorSpace = ColorSpace.SRgb)
     {
-        Pixels = pixels;
+        Data = data;
         Width = width;
         Height = height;
         Channels = channels;

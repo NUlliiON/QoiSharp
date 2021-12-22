@@ -24,23 +24,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Resources\Images" />
+		<Folder Include="Resources" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Resources\Images\heart-small.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Resources\Images\file_example_PNG_500kB.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Resources\Images\file_example_PNG_500kB.qoi">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\src\QoiSharp\QoiSharp.csproj" />
+		<ProjectReference Include="..\..\src\QoiSharp\QoiSharp.csproj" />
 	</ItemGroup>
 
 </Project>
