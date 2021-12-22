@@ -40,7 +40,7 @@ Console.WriteLine($"Color space: {qoiImage.ColorSpace}");
 Console.WriteLine($"Data length: {qoiImage.Pixels.Length}");
 ```
 ## Usage example
-### Link: https://github.com/NUlliiON/QoiSharp/samples
+### Link: https://github.com/NUlliiON/QoiSharp/tree/main/samples
 
 ## TODOs
 * Streams
