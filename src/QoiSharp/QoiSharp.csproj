@@ -5,17 +5,19 @@
 		<LangVersion>10</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<RootNamespace>QoiSharp</RootNamespace>
+		
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		
 		<Authors>Eugene Antonov</Authors>
-		<PackageVersion>1.0.0-beta.2</PackageVersion>
+		<PackageId>QoiSharp</PackageId>
+		<PackageVersion>1.0.0</PackageVersion>
 		<PackageProjectUrl>https://github.com/NUlliiON/QoiSharp</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageTags>QOI Fast Image Jpg Jpeg Bitmap Png Net6</PackageTags>
+		<PackageTags>QOI Fast Image Jpg Jpeg Bitmap Png Net5 Net6</PackageTags>
 		<RepositoryUrl>https://github.com/NUlliiON/QoiSharp</RepositoryUrl>
 		<Description>QoiSharp is an implementation of the QOI format for fast lossless image compression</Description>
-		<PackageId>QoiSharp</PackageId>
 		<Title>QoiSharp</Title>
-		<RootNamespace>QoiSharp</RootNamespace>
 	</PropertyGroup>
 
 </Project>

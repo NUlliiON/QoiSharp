@@ -1,4 +1,5 @@
-﻿using QoiSharp.Exceptions;
+﻿using QoiSharp.Codec;
+using QoiSharp.Exceptions;
 
 namespace QoiSharp;
 
@@ -8,184 +9,171 @@ namespace QoiSharp;
 public static class QoiEncoder
 {
     /// <summary>
-    /// Encodes pixel data into QOI.
+    /// Encodes raw pixel data into QOI.
     /// </summary>
-    /// <param name="pixels">QOI image.</param>
+    /// <param name="image">QOI image.</param>
     /// <returns>Encoded image.</returns>
     /// <exception cref="QoiEncodingException">Thrown when image information is invalid.</exception>
     public static byte[] Encode(QoiImage image)
     {
-        if (image.Width is 0 or > 0xFFFF)
+        if (image.Width == 0)
         {
             throw new QoiEncodingException($"Invalid width: {image.Width}");
         }
-        if (image.Height is 0 or > 0xFFFF)
+
+        if (image.Height == 0 || image.Height >= QoiCodec.MaxPixels / image.Width)
         {
-            throw new QoiEncodingException($"Invalid height: {image.Height}");
-        }
-        if (image.Channels is not 3 and not 4)
-        {
-            throw new QoiEncodingException($"Invalid number of channels: {image.Channels}");
+            throw new QoiEncodingException($"Invalid height: {image.Height}. Maximum for this image is {QoiCodec.MaxPixels / image.Width - 1}");
         }
 
         int width = image.Width;
         int height = image.Height;
-        byte channels = image.Channels;
+        byte channels = (byte)image.Channels;
         byte colorSpace = (byte)image.ColorSpace;
-        byte[] pixels = image.Pixels;
-        
-        byte[] bytes = new byte[QoiCodec.HeaderSize + QoiCodec.Padding + width * height * (channels + 1)];
+        byte[] pixels = image.Data;
+
+        byte[] bytes = new byte[QoiCodec.HeaderSize + QoiCodec.Padding.Length + (width * height * channels)];
 
         bytes[0] = (byte)(QoiCodec.Magic >> 24);
-        bytes[1] = (byte)((QoiCodec.Magic >> 16) & 0xFF);
-        bytes[2] = (byte)((QoiCodec.Magic >> 8) & 0xFF);
-        bytes[3] = (byte)(QoiCodec.Magic & 0xFF);
+        bytes[1] = (byte)(QoiCodec.Magic >> 16);
+        bytes[2] = (byte)(QoiCodec.Magic >> 8);
+        bytes[3] = (byte)QoiCodec.Magic;
 
         bytes[4] = (byte)(width >> 24);
-        bytes[5] = (byte)((width >> 16) & 0xFF);
-        bytes[6] = (byte)((width >> 8) & 0xFF);
-        bytes[7] = (byte)(width & 0xFF);
+        bytes[5] = (byte)(width >> 16);
+        bytes[6] = (byte)(width >> 8);
+        bytes[7] = (byte)width;
 
         bytes[8] = (byte)(height >> 24);
-        bytes[9] = (byte)((height >> 16) & 0xFF);
-        bytes[10] = (byte)((height >> 8) & 0xFF);
-        bytes[11] = (byte)(height & 0xFF);
+        bytes[9] = (byte)(height >> 16);
+        bytes[10] = (byte)(height >> 8);
+        bytes[11] = (byte)height;
 
         bytes[12] = channels;
         bytes[13] = colorSpace;
 
-        int[] index = new int[64];
+        byte[] index = new byte[QoiCodec.HashTableSize * 4];
 
-        int run = 0;
-        // TODO: use struct instead?
-        byte rPrev = 0;
-        byte gPrev = 0;
-        byte bPrev = 0;
-        byte aPrev = 255;
-        int vPrev = 255;
-        
-        // TODO: use struct instead?
+        byte prevR = 0;
+        byte prevG = 0;
+        byte prevB = 0;
+        byte prevA = 255;
+
         byte r = 0;
         byte g = 0;
         byte b = 0;
         byte a = 255;
-        int v = 255;
-        
+
+        int run = 0;
         int p = QoiCodec.HeaderSize;
+        bool hasAlpha = channels == 4;
 
-        int pxLength = width * height * 4;
-        int pxEnd = pxLength - 4;
+        int pixelsLength = width * height * channels;
+        int pixelsEnd = pixelsLength - channels;
+        int counter = 0;
 
-        for (int pxPos = 0; pxPos < pxLength; pxPos += channels)
+        for (int pxPos = 0; pxPos < pixelsLength; pxPos += channels)
         {
             r = pixels[pxPos];
             g = pixels[pxPos + 1];
             b = pixels[pxPos + 2];
-
-            if (channels == 4) 
+            if (hasAlpha)
             {
                 a = pixels[pxPos + 3];
             }
 
-            v = (r << 24) | (g << 16) | (b << 8) | a;
-
-            if (v == vPrev)
+            if (RgbaEquals(prevR, prevG, prevB, prevA, r, g, b, a))
             {
                 run++;
-            }
-
-            if (run > 0 && (run == 0x2020 || v != vPrev || pxPos == pxEnd))
-            {
-                if (run < 33)
+                if (run == 62 || pxPos == pixelsEnd)
                 {
-                    run -= 1;
-                    bytes[p++] = (byte)(QoiCodec.Run8 | run);
+                    bytes[p++] = (byte)(QoiCodec.Run | (run - 1));
+                    run = 0;
+                }
+            }
+            else
+            {
+                if (run > 0)
+                {
+                    bytes[p++] = (byte)(QoiCodec.Run | (run - 1));
+                    run = 0;
+                }
+
+                int indexPos = QoiCodec.CalculateHashTableIndex(r, g, b, a);
+
+                if (RgbaEquals(r, g, b, a, index[indexPos], index[indexPos + 1], index[indexPos + 2], index[indexPos + 3]))
+                {
+                    bytes[p++] = (byte)(QoiCodec.Index | (indexPos / 4));
                 }
                 else
                 {
-                    run -= 33;
-                    bytes[p++] = (byte)(QoiCodec.Run16 | run >> 8);
-                    bytes[p++] = (byte)run;
-                }
+                    index[indexPos] = r;
+                    index[indexPos + 1] = g;
+                    index[indexPos + 2] = b;
+                    index[indexPos + 3] = a;
 
-                run = 0;
-            }
-
-            if (v != vPrev)
-            {
-                int indexPos = (r ^ g ^ b ^ a) % 64;
-
-                if (index[indexPos] == v)
-                {
-                    bytes[p++] = (byte)(QoiCodec.Index | indexPos);
-                }
-                else
-                {
-                    index[indexPos] = v;
-
-                    int vr = r - rPrev;
-                    int vg = g - gPrev;
-                    int vb = b - bPrev;
-                    int va = a - aPrev;
-
-                    if (vr is > -17 and < 16 && 
-                        vg is > -17 and < 16 && 
-                        vb is > -17 and < 16 && 
-                        va is > -17 and < 16)
+                    if (a == prevA)
                     {
-                        if (va == 0 &&
-                            vr is > -3 and < 2 &&
+                        int vr = r - prevR;
+                        int vg = g - prevG;
+                        int vb = b - prevB;
+
+                        int vgr = vr - vg;
+                        int vgb = vb - vg;
+
+                        if (vr is > -3 and < 2 &&
                             vg is > -3 and < 2 &&
                             vb is > -3 and < 2)
                         {
-                            bytes[p++] = (byte)(QoiCodec.Diff8 | ((vr + 2) << 4) | (vg + 2) << 2 | (vb + 2));
+                            counter++;
+                            bytes[p++] = (byte)(QoiCodec.Diff | (vr + 2) << 4 | (vg + 2) << 2 | (vb + 2));
                         }
-                        else if (va == 0 &&
-                                 vg is > -9 and < 8 && 
-                                 vb is > -9 and < 8)
+                        else if (vgr is > -9 and < 8 &&
+                                 vg is > -33 and < 32 &&
+                                 vgb is > -9 and < 8
+                                )
                         {
-                            bytes[p++] = (byte)(QoiCodec.Diff16 | (vr + 16));
-                            bytes[p++] = (byte)((vg + 8) << 4 | (vb + 8));
+                            bytes[p++] = (byte)(QoiCodec.Luma | (vg + 32));
+                            bytes[p++] = (byte)((vgr + 8) << 4 | (vgb + 8));
                         }
                         else
                         {
-                            bytes[p++] = (byte)(QoiCodec.Diff24 | (vr + 16) >> 1);
-                            bytes[p++] = (byte)((vr + 16) << 7 | (vg + 16) << 2 | (vb + 16) >> 3);
-                            bytes[p++] = (byte)((vb + 16) << 5 | (va + 16));
+                            bytes[p++] = QoiCodec.Rgb;
+                            bytes[p++] = r;
+                            bytes[p++] = g;
+                            bytes[p++] = b;
                         }
                     }
                     else
                     {
-                        bytes[p++] = (byte)(QoiCodec.Color | (vr != 0 ? 8 : 0) | (vg != 0 ? 4 : 0) | (vb != 0 ? 2 : 0) | (va != 0 ? 1 : 0));
-                        if (vr != 0)
-                        {
-                            bytes[p++] = r;
-                        }
-                        if (vg != 0)
-                        {
-                            bytes[p++] = g;
-                        }
-                        if (vb != 0)
-                        {
-                            bytes[p++] = b;
-                        }
-                        if (va != 0)
-                        {
-                            bytes[p++] = a;
-                        }
+                        bytes[p++] = QoiCodec.Rgba;
+                        bytes[p++] = r;
+                        bytes[p++] = g;
+                        bytes[p++] = b;
+                        bytes[p++] = a;
                     }
                 }
             }
 
-            rPrev = r;
-            gPrev = g;
-            bPrev = b;
-            aPrev = a;
-            vPrev = v;
+            prevR = r;
+            prevG = g;
+            prevB = b;
+            prevA = a;
         }
 
-        p += QoiCodec.Padding;
+        for (int padIdx = 0; padIdx < QoiCodec.Padding.Length; padIdx++)
+        {
+            bytes[p + padIdx] = QoiCodec.Padding[padIdx];
+        }
+
+        p += QoiCodec.Padding.Length;
 
         return bytes[..p];
     }
+
+    private static bool RgbaEquals(byte r1, byte g1, byte b1, byte a1, byte r2, byte g2, byte b2, byte a2) =>
+        r1 == r2 &&
+        g1 == g2 &&
+        b1 == b2 &&
+        a1 == a2;
 }
