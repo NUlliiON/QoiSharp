@@ -1,5 +1,9 @@
+<h1 align="center">
 
-# QoiSharp
+<img src="https://qoiformat.org/qoi-logo.svg" alt="QoiSharp" width="256"/>
+<br/>
+QoiSharp 
+</h1>
 
 #### ✅ **Project status: active**. [What does it mean?](https://github.com/NUlliiON/QoiSharp/blob/main/docs/project-status.md)
 ### QoiSharp is an implementation of the [QOI](https://github.com/phoboslab/qoi) format for fast, lossless image compression
@@ -24,7 +28,7 @@ byte[] data = GetRawPixels();
 int width = 1920;
 int height = 1080;
 var channels = Channels.RgbWithAlpha;
-byte[] qoiData = QoiEncoder.Encode(new QoiImage(pngData, width, height, channels));
+byte[] qoiData = QoiEncoder.Encode(new QoiImage(data, width, height, channels));
 ```
 ### Decoding
 ```csharp
@@ -33,9 +37,9 @@ Console.WriteLine($"Width: {qoiImage.Width}");
 Console.WriteLine($"Height: {qoiImage.Height}");
 Console.WriteLine($"Channels: {qoiImage.Channels}");
 Console.WriteLine($"Color space: {qoiImage.ColorSpace}");
-Console.WriteLine($"Data length: {qoiImage.Data.Length}");
+Console.WriteLine($"Data length: {qoiImage.Pixels.Length}");
 ```
-## Usage examples
+## Usage example
 ### Link: https://github.com/NUlliiON/QoiSharp/samples
 
 ## TODOs
