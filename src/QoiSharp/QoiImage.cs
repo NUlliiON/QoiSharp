@@ -10,8 +10,12 @@ public class QoiImage
     /// <summary>
     /// Raw pixel data.
     /// </summary>
-    public byte[] Data { get; }
-    
+    public ReadOnlyMemory<byte> Data { get; }
+
+    // Make the zero-copy version available internally for safety. The public API clones the byte[] to guarantee immutability.
+    internal static QoiImage FromMemory(ReadOnlyMemory<byte> memory, int width, int height, Channels channels, ColorSpace colorSpace = ColorSpace.SRgb)
+        => new QoiImage(memory, width, height, channels, colorSpace);
+
     /// <summary>
     /// Image width.
     /// </summary>
@@ -31,13 +35,19 @@ public class QoiImage
     /// Color space.
     /// </summary>
     public ColorSpace ColorSpace { get; }
-    
+
     /// <summary>
     /// Default constructor.
     /// </summary>
     public QoiImage(byte[] data, int width, int height, Channels channels, ColorSpace colorSpace = ColorSpace.SRgb)
+        : this(new ReadOnlyMemory<byte>((byte[])data.Clone()), width, height, channels, colorSpace)
     {
-        Data = data;
+
+    }
+
+    QoiImage(ReadOnlyMemory<byte> memory, int width, int height, Channels channels, ColorSpace colorSpace = ColorSpace.SRgb)
+    {
+        Data = memory;
         Width = width;
         Height = height;
         Channels = channels;
