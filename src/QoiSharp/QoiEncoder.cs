@@ -1,6 +1,8 @@
 ﻿using QoiSharp.Codec;
 using QoiSharp.Exceptions;
 
+using System.Buffers.Binary;
+
 namespace QoiSharp;
 
 /// <summary>
@@ -41,20 +43,9 @@ public static class QoiEncoder
         if (buffer.Length < QoiCodec.HeaderSize + QoiCodec.Padding.Length + (width * height * channels))
             return -1;
 
-        buffer[0] = (byte)(QoiCodec.Magic >> 24);
-        buffer[1] = (byte)(QoiCodec.Magic >> 16);
-        buffer[2] = (byte)(QoiCodec.Magic >> 8);
-        buffer[3] = (byte)QoiCodec.Magic;
-
-        buffer[4] = (byte)(width >> 24);
-        buffer[5] = (byte)(width >> 16);
-        buffer[6] = (byte)(width >> 8);
-        buffer[7] = (byte)width;
-
-        buffer[8] = (byte)(height >> 24);
-        buffer[9] = (byte)(height >> 16);
-        buffer[10] = (byte)(height >> 8);
-        buffer[11] = (byte)height;
+        BinaryPrimitives.WriteInt32BigEndian(buffer, QoiCodec.Magic);
+        BinaryPrimitives.WriteInt32BigEndian(buffer.Slice(4), width);
+        BinaryPrimitives.WriteInt32BigEndian(buffer.Slice(8), height);
 
         buffer[12] = channels;
         buffer[13] = colorSpace;
@@ -168,11 +159,7 @@ public static class QoiEncoder
             prevA = a;
         }
 
-        for (int padIdx = 0; padIdx < QoiCodec.Padding.Length; padIdx++)
-        {
-            buffer[p + padIdx] = QoiCodec.Padding[padIdx];
-        }
-
+        QoiCodec.Padding.Span.CopyTo(buffer.Slice (p));
         p += QoiCodec.Padding.Length;
 
         return p;

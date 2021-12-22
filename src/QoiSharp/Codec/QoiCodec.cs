@@ -27,14 +27,12 @@ public static class QoiCodec
     
     public const byte HeaderSize = 14;
     public const string MagicString = "qoif";
-    
-    public static readonly int Magic = CalculateMagic(MagicString.AsSpan());
-    public static readonly byte[] Padding = {0, 0, 0, 0, 0, 0, 0, 1};
+
+    public const int Magic = 'q' << 24 | 'o' << 16 | 'i' << 8 | 'f';
+    public static readonly ReadOnlyMemory<byte> Padding = new byte[] {0, 0, 0, 0, 0, 0, 0, 1};
 
     public static int CalculateHashTableIndex(int r, int g, int b, int a) =>
         ((r & 0xFF) * 3 + (g & 0xFF) * 5 + (b & 0xFF) * 7 + (a & 0xFF) * 11) % HashTableSize * 4;
 
     public static bool IsValidMagic(ReadOnlySpan<byte> magic) => BinaryPrimitives.ReadInt32BigEndian (magic) == Magic;
-    
-    private static int CalculateMagic(ReadOnlySpan<char> chars) => chars[0] << 24 | chars[1] << 16 | chars[2] << 8 | chars[3];
 }
