@@ -53,22 +53,16 @@ public static class QoiEncoder
 
         Span<int> index = stackalloc int[QoiCodec.HashTableSize];
 
-        Span<byte> prev = stackalloc byte[4];
-        prev.Clear();
-        prev[3] = 255;
-
-        Span<byte> rgba = stackalloc byte[4];
-        prev.CopyTo(rgba);
-
+        Span<byte> prev = stackalloc byte[4] { 0, 0, 0, 255 };
+        Span<byte> rgba = stackalloc byte[4] { 0, 0, 0, 255 };
         Span<byte> rgb = rgba.Slice(0, 3);
 
         Span<int> prevAsInt = MemoryMarshal.Cast<byte, int>(prev);
         Span<int> rgbaAsInt = MemoryMarshal.Cast<byte, int>(rgba);
 
         int run = 0;
-        int p = QoiCodec.HeaderSize;
-
         int counter = 0;
+        int p = QoiCodec.HeaderSize;
         pixels = pixels.Slice(0, width * height * channels);
         while (pixels.Length > 0)
         {
