@@ -92,7 +92,7 @@ public static class QoiEncoder
                     run = 0;
                 }
 
-                int indexPos = QoiCodec.CalculateHashTableIndex(rgba[0], rgba[1], rgba[2], rgba[3]);
+                int indexPos = QoiCodec.CalculateHashTableIndex(rgba);
 
                 if (RgbaEquals(rgba[0], rgba[1], rgba[2], rgba[3], index[indexPos], index[indexPos + 1], index[indexPos + 2], index[indexPos + 3]))
                 {
