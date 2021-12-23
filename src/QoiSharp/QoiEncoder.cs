@@ -51,7 +51,7 @@ public static class QoiEncoder
         buffer[12] = (byte)channels;
         buffer[13] = colorSpace;
 
-        Span<byte> index = stackalloc byte[QoiCodec.HashTableSize * 4];
+        Span<int> index = stackalloc int[QoiCodec.HashTableSize];
 
         Span<byte> prev = stackalloc byte[4];
         prev.Clear();
@@ -62,7 +62,6 @@ public static class QoiEncoder
 
         Span<int> prevAsInt = MemoryMarshal.Cast<byte, int>(prev);
         Span<int> rgbaAsInt = MemoryMarshal.Cast<byte, int>(rgba);
-        Span<int> indexAsInt = MemoryMarshal.Cast<byte, int>(index);
 
         int run = 0;
         int p = QoiCodec.HeaderSize;
@@ -93,15 +92,14 @@ public static class QoiEncoder
                     run = 0;
                 }
 
-                int indexPos = QoiCodec.CalculateHashTableIndex(rgba)/4;
-
-                if (rgbaAsInt[0] == indexAsInt[indexPos])
+                int indexPos = (rgba[0] * 3 + rgba[1] * 5 + rgba[2] * 7 + rgba[3] * 11) % QoiCodec.HashTableSize;
+                if (rgbaAsInt[0] == index[indexPos])
                 {
                     buffer[p++] = (byte)(QoiCodec.Index | (indexPos));
                 }
                 else
                 {
-                    indexAsInt[indexPos] = rgbaAsInt[0];
+                    index[indexPos] = rgbaAsInt[0];
 
                     if (rgba[3] == prev[3])
                     {
