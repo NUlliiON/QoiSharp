@@ -66,10 +66,8 @@ public static class QoiEncoder
         int run = 0;
         int p = QoiCodec.HeaderSize;
 
-        int pixelsLength = width * height * channels;
-        int pixelsEnd = pixelsLength - channels;
         int counter = 0;
-
+        pixels = pixels.Slice(0, width * height * channels);
         while (pixels.Length > 0)
         {
             pixels.Slice(0, channels).CopyTo(rgba);
