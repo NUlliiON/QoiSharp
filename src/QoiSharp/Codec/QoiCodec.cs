@@ -34,5 +34,8 @@ public static class QoiCodec
     public static int CalculateHashTableIndex(int r, int g, int b, int a) =>
         ((r & 0xFF) * 3 + (g & 0xFF) * 5 + (b & 0xFF) * 7 + (a & 0xFF) * 11) % HashTableSize * 4;
 
+    public static int CalculateHashTableIndexAsInt(int r, int g, int b, int a) =>
+        ((r & 0xFF) * 3 + (g & 0xFF) * 5 + (b & 0xFF) * 7 + (a & 0xFF) * 11) % HashTableSize;
+
     public static bool IsValidMagic(ReadOnlySpan<byte> magic) => BinaryPrimitives.ReadInt32BigEndian (magic) == Magic;
 }
