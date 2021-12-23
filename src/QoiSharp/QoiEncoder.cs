@@ -51,7 +51,7 @@ public static class QoiEncoder
         buffer[12] = (byte)channels;
         buffer[13] = colorSpace;
 
-        byte[] index = new byte[QoiCodec.HashTableSize * 4];
+        Span<byte> index = stackalloc byte[QoiCodec.HashTableSize * 4];
 
         Span<byte> prev = stackalloc byte[4];
         prev.Clear();
@@ -100,7 +100,7 @@ public static class QoiEncoder
                 }
                 else
                 {
-                    rgba.CopyTo(index.AsSpan(indexPos));
+                    rgba.CopyTo(index.Slice(indexPos));
 
                     if (rgba[3] == prev[3])
                     {
