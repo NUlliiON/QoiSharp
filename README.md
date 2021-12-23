@@ -39,7 +39,7 @@ Console.WriteLine($"Channels: {qoiImage.Channels}");
 Console.WriteLine($"Color space: {qoiImage.ColorSpace}");
 Console.WriteLine($"Data length: {qoiImage.Pixels.Length}");
 ```
-## Usage example
+## Example Usage
 ### [Click here](https://github.com/NUlliiON/QoiSharp/tree/main/samples)
 
 ## TODOs
