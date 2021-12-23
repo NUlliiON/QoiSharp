@@ -62,6 +62,7 @@ public static class QoiEncoder
 
         Span<int> prevAsInt = MemoryMarshal.Cast<byte, int>(prev);
         Span<int> rgbaAsInt = MemoryMarshal.Cast<byte, int>(rgba);
+        Span<int> indexAsInt = MemoryMarshal.Cast<byte, int>(index);
 
         int run = 0;
         int p = QoiCodec.HeaderSize;
@@ -92,15 +93,15 @@ public static class QoiEncoder
                     run = 0;
                 }
 
-                int indexPos = QoiCodec.CalculateHashTableIndex(rgba);
+                int indexPos = QoiCodec.CalculateHashTableIndex(rgba)/4;
 
-                if (RgbaEquals(rgba[0], rgba[1], rgba[2], rgba[3], index[indexPos], index[indexPos + 1], index[indexPos + 2], index[indexPos + 3]))
+                if (rgbaAsInt[0] == indexAsInt[indexPos])
                 {
-                    buffer[p++] = (byte)(QoiCodec.Index | (indexPos / 4));
+                    buffer[p++] = (byte)(QoiCodec.Index | (indexPos));
                 }
                 else
                 {
-                    rgba.CopyTo(index.Slice(indexPos));
+                    indexAsInt[indexPos] = rgbaAsInt[0];
 
                     if (rgba[3] == prev[3])
                     {
