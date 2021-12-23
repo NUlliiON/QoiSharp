@@ -37,7 +37,7 @@ public static class QoiEncoder
 
         int width = image.Width;
         int height = image.Height;
-        byte channels = (byte)image.Channels;
+        int channels = (int)image.Channels;
         byte colorSpace = (byte)image.ColorSpace;
         ReadOnlySpan<byte> pixels = image.Data.Span;
 
@@ -48,7 +48,7 @@ public static class QoiEncoder
         BinaryPrimitives.WriteInt32BigEndian(buffer.Slice(4), width);
         BinaryPrimitives.WriteInt32BigEndian(buffer.Slice(8), height);
 
-        buffer[12] = channels;
+        buffer[12] = (byte)channels;
         buffer[13] = colorSpace;
 
         byte[] index = new byte[QoiCodec.HashTableSize * 4];
@@ -65,26 +65,20 @@ public static class QoiEncoder
 
         int run = 0;
         int p = QoiCodec.HeaderSize;
-        bool hasAlpha = channels == 4;
 
         int pixelsLength = width * height * channels;
         int pixelsEnd = pixelsLength - channels;
         int counter = 0;
 
-        for (int pxPos = 0; pxPos < pixelsLength; pxPos += channels)
+        while (pixels.Length > 0)
         {
-            rgba[0] = pixels[pxPos];
-            rgba[1] = pixels[pxPos + 1];
-            rgba[2] = pixels[pxPos + 2];
-            if (hasAlpha)
-            {
-                rgba[3] = pixels[pxPos + 3];
-            }
+            pixels.Slice(0, channels).CopyTo(rgba);
+            pixels = pixels.Slice(channels);
 
             if (prevAsInt[0] == rgbaAsInt [0])
             {
                 run++;
-                if (run == 62 || pxPos == pixelsEnd)
+                if (run == 62 || pixels.Length == 0)
                 {
                     buffer[p++] = (byte)(QoiCodec.Run | (run - 1));
                     run = 0;
