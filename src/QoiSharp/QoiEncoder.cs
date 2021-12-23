@@ -60,6 +60,8 @@ public static class QoiEncoder
         Span<byte> rgba = stackalloc byte[4];
         prev.CopyTo(rgba);
 
+        Span<byte> rgb = rgba.Slice(0, 3);
+
         Span<int> prevAsInt = MemoryMarshal.Cast<byte, int>(prev);
         Span<int> rgbaAsInt = MemoryMarshal.Cast<byte, int>(rgba);
 
@@ -126,7 +128,7 @@ public static class QoiEncoder
                         else
                         {
                             buffer[p++] = QoiCodec.Rgb;
-                            rgba.Slice(0, 3).CopyTo(buffer.Slice(p));
+                            rgb.CopyTo(buffer.Slice(p));
                             p += 3;
                         }
                     }
