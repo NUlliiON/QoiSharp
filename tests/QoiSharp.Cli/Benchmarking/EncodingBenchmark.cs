@@ -23,7 +23,7 @@ public class EncodingBenchmark
     [Benchmark]
     public void QoiEncoding()
     {
-        var qoi = new QoiImage (image.Data, image.Width, image.Height, image.SourceComp == ColorComponents.RedGreenBlueAlpha ? Codec.Channels.RgbWithAlpha : Codec.Channels.Rgb);
+        var qoi = new QoiImage (image.Data, image.Width, image.Height, image.Comp == ColorComponents.RedGreenBlueAlpha ? Codec.Channels.RgbWithAlpha : Codec.Channels.Rgb);
         QoiEncoder.Encode(qoi);
     }
 }
