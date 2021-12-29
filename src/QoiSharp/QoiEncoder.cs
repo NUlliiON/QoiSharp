@@ -19,7 +19,7 @@ public static class QoiEncoder
     /// <exception cref="QoiEncodingException">Thrown when image information is invalid.</exception>
     public static byte[] Encode(QoiImage image)
     {
-        var bytes = new byte[QoiCodec.HeaderSize + QoiCodec.ReadOnlyPadding.Length + (image.Width * image.Height * (byte)image.Channels)];
+        var bytes = new byte[QoiCodec.HeaderSize + QoiCodec.ReadOnlyPadding.Length + (image.Width * image.Height * (int)image.Channels)];
         return bytes[..Encode(image, bytes)];
     }
 
@@ -84,6 +84,7 @@ public static class QoiEncoder
                     buffer[p++] = (byte)(QoiCodec.Run | (run - 1));
                     run = 0;
                 }
+                continue;
             }
             else
             {
