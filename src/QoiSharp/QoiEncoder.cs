@@ -65,6 +65,7 @@ public static class QoiEncoder
 
         ref uint prevAsInt = ref MemoryMarshal.Cast<byte, uint>(prev)[0];
         ref uint rgbaAsInt = ref MemoryMarshal.Cast<byte, uint>(rgba)[0];
+        index.Fill(rgbaAsInt);
 
         int run = 0;
         int counter = 0;
