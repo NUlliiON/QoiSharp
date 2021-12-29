@@ -12,13 +12,14 @@ namespace QoiSharp.Tests;
 public class QoiTests
 {
     [Theory]
-    [InlineData(Constants.Images.PhotoTecnick)]
-    [InlineData(Constants.Images.TexturesPhoto)]
-    [InlineData(Constants.Images.PngImg)]
-    [InlineData(Constants.Images.PhotoWikipedia)]
+    [InlineData(Constants.Images.PhotoTecnickSubDirectory)]
+    [InlineData(Constants.Images.TexturesPhotoSubDirectory)]
+    [InlineData(Constants.Images.PngImgSubDirectory)]
+    [InlineData(Constants.Images.PhotoWikipediaSubDirectory)]
     public async Task RgbEncodingShouldWork(string imagesDirectoryPath)
     {
         // Arrange
+        imagesDirectoryPath = Constants.Images.GetFullPath(imagesDirectoryPath);
         string imageFilePath = Directory.EnumerateFiles(imagesDirectoryPath).First(x => x.EndsWith(".png"));
         var originalImg = ImageResult.FromMemory(await File.ReadAllBytesAsync(imageFilePath), ColorComponents.RedGreenBlue);
         var qoiImage = new QoiImage(originalImg.Data, originalImg.Width, originalImg.Height, (Channels)originalImg.Comp);
@@ -36,13 +37,14 @@ public class QoiTests
     }
     
     [Theory]
-    [InlineData(Constants.Images.PhotoTecnick)]
-    [InlineData(Constants.Images.TexturesPhoto)]
-    [InlineData(Constants.Images.PngImg)]
-    [InlineData(Constants.Images.PhotoWikipedia)]
+    [InlineData(Constants.Images.PhotoTecnickSubDirectory)]
+    [InlineData(Constants.Images.TexturesPhotoSubDirectory)]
+    [InlineData(Constants.Images.PngImgSubDirectory)]
+    [InlineData(Constants.Images.PhotoWikipediaSubDirectory)]
     public async Task RgbaEncodingShouldWork(string imagesDirectoryPath)
     {
         // Arrange
+        imagesDirectoryPath = Constants.Images.GetFullPath(imagesDirectoryPath);
         string imageFilePath = Directory.EnumerateFiles(imagesDirectoryPath).First(x => x.EndsWith(".png"));
         var originalImg = ImageResult.FromMemory(await File.ReadAllBytesAsync(imageFilePath), ColorComponents.RedGreenBlueAlpha);
         var qoiImage = new QoiImage(originalImg.Data, originalImg.Width, originalImg.Height, (Channels)originalImg.Comp);
@@ -60,13 +62,14 @@ public class QoiTests
     }
 
     [Theory]
-    [InlineData(Constants.Images.PhotoTecnick)]
-    [InlineData(Constants.Images.TexturesPhoto)]
-    [InlineData(Constants.Images.PngImg)]
-    [InlineData(Constants.Images.PhotoWikipedia)]
+    [InlineData(Constants.Images.PhotoTecnickSubDirectory)]
+    [InlineData(Constants.Images.TexturesPhotoSubDirectory)]
+    [InlineData(Constants.Images.PngImgSubDirectory)]
+    [InlineData(Constants.Images.PhotoWikipediaSubDirectory)]
     public async Task RgbDecodingShouldWork(string imagesDirectoryPath)
     {
         // Arrange
+        imagesDirectoryPath = Constants.Images.GetFullPath(imagesDirectoryPath);
         string imageFilePath = Directory.EnumerateFiles(imagesDirectoryPath).First(x => x.EndsWith(".png"));
         var originalImg = ImageResult.FromMemory(await File.ReadAllBytesAsync(imageFilePath), ColorComponents.RedGreenBlue);
         var qoiImage = new QoiImage(originalImg.Data, originalImg.Width, originalImg.Height, (Channels)originalImg.Comp);
@@ -84,13 +87,14 @@ public class QoiTests
     }
     
     [Theory]
-    [InlineData(Constants.Images.PhotoTecnick)]
-    [InlineData(Constants.Images.TexturesPhoto)]
-    [InlineData(Constants.Images.PngImg)]
-    [InlineData(Constants.Images.PhotoWikipedia)]
+    [InlineData(Constants.Images.PhotoTecnickSubDirectory)]
+    [InlineData(Constants.Images.TexturesPhotoSubDirectory)]
+    [InlineData(Constants.Images.PngImgSubDirectory)]
+    [InlineData(Constants.Images.PhotoWikipediaSubDirectory)]
     public async Task RgbaDecodingShouldWork(string imagesDirectoryPath)
     {
         // Arrange
+        imagesDirectoryPath = Constants.Images.GetFullPath(imagesDirectoryPath);
         string imageFilePath = Directory.EnumerateFiles(imagesDirectoryPath).First(x => x.EndsWith(".png"));
         var originalImg = ImageResult.FromMemory(await File.ReadAllBytesAsync(imageFilePath), ColorComponents.RedGreenBlueAlpha);
         var qoiImage = new QoiImage(originalImg.Data, originalImg.Width, originalImg.Height, (Channels)originalImg.Comp);
