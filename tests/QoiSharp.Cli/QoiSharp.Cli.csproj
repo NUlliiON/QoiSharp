@@ -10,6 +10,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Include="..\QoiSharp.Tests\Constants.cs" Link="Constants.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
 	  <PackageReference Include="Spectre.Console" Version="0.43.0" />
