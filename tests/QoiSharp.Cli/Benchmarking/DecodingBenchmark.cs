@@ -1,27 +1,26 @@
 ﻿using BenchmarkDotNet.Attributes;
+
 using QoiSharp.Cli.Benchmarking.Configs;
-using QoiSharp.Codec;
+using QoiSharp.Tests;
+
 using StbImageSharp;
 
 namespace QoiSharp.Cli.Benchmarking;
 
-[Config(typeof(ShortRunConfig))]
+[MemoryDiagnoser]
 public class DecodingBenchmark
 {
-    [GlobalSetup]
-    public async Task GlobalSetup()
+    readonly byte[] encoded;
+
+    public DecodingBenchmark()
     {
+        var rawData = File.ReadAllBytes(Path.Combine(Constants.RootImagesDirectory, "photo_kodak", "kodim01.png"));
+        var image = ImageResult.FromMemory(rawData, ColorComponents.RedGreenBlueAlpha);
+        var qoi = new QoiImage(image.Data, image.Width, image.Height, image.SourceComp == ColorComponents.RedGreenBlueAlpha ? Codec.Channels.RgbWithAlpha : Codec.Channels.Rgb);
+        encoded = QoiEncoder.Encode(qoi);
     }
 
-    [Benchmark(Description = "PNG Decoding")]
-    public void PngDecoding()
-    {
-        // byte[] data = ImageResult.FromMemory(_pngData, ColorComponents.RedGreenBlueAlpha).Data;
-    }
-
-    [Benchmark(Description = "QOI Decoding")]
+    [Benchmark]
     public void QoiDecoding()
-    {
-        // byte[] data = QoiDecoder.Decode(_qoiData).Data;
-    }
+        => QoiDecoder.Decode(encoded);
 }
