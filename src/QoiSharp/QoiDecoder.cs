@@ -21,7 +21,7 @@ public static class QoiDecoder
             throw new QoiDecodingException("File too short");
         }
         
-        if (!QoiCodec.IsValidMagic(data.Slice (0, 4)))
+        if (!QoiCodec.IsValidMagic(data.Slice(0, 4)))
         {
             throw new QoiDecodingException("Invalid file magic"); // TODO: add magic value
         }

@@ -69,7 +69,7 @@ public static class QoiEncoder
             pixels.Slice(0, channels).CopyTo(rgba);
             pixels = pixels.Slice(channels);
 
-            if (prevAsInt[0] == rgbaAsInt [0])
+            if (prevAsInt[0] == rgbaAsInt[0])
             {
                 run++;
                 if (run == 62 || pixels.Length == 0)
@@ -113,8 +113,7 @@ public static class QoiEncoder
                         }
                         else if (vgr is > -9 and < 8 &&
                                  vg is > -33 and < 32 &&
-                                 vgb is > -9 and < 8
-                                )
+                                 vgb is > -9 and < 8)
                         {
                             buffer[p++] = (byte)(QoiCodec.Luma | (vg + 32));
                             buffer[p++] = (byte)((vgr + 8) << 4 | (vgb + 8));
@@ -129,7 +128,7 @@ public static class QoiEncoder
                     else
                     {
                         buffer[p++] = QoiCodec.Rgba;
-                        rgba.CopyTo(buffer.Slice (p));
+                        rgba.CopyTo(buffer.Slice(p));
                         p += 4;
                     }
                 }
@@ -137,7 +136,7 @@ public static class QoiEncoder
             prevAsInt[0] = rgbaAsInt[0];
         }
 
-        QoiCodec.Padding.Span.CopyTo(buffer.Slice (p));
+        QoiCodec.Padding.Span.CopyTo(buffer.Slice(p));
         p += QoiCodec.Padding.Length;
 
         return p;

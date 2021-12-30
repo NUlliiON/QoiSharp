@@ -13,8 +13,8 @@ public class QoiImage
     public ReadOnlyMemory<byte> Data { get; }
 
     // Make the zero-copy version available internally for safety. The public API clones the byte[] to guarantee immutability.
-    public static QoiImage FromMemory(ReadOnlyMemory<byte> memory, int width, int height, Channels channels, ColorSpace colorSpace = ColorSpace.SRgb)
-        => new QoiImage(memory, width, height, channels, colorSpace);
+    public static QoiImage FromMemory(ReadOnlyMemory<byte> memory, int width, int height, Channels channels, ColorSpace colorSpace = ColorSpace.SRgb) 
+        => new(memory, width, height, channels, colorSpace);
 
     /// <summary>
     /// Image width.
@@ -45,7 +45,7 @@ public class QoiImage
 
     }
 
-    QoiImage(ReadOnlyMemory<byte> memory, int width, int height, Channels channels, ColorSpace colorSpace = ColorSpace.SRgb)
+    private QoiImage(ReadOnlyMemory<byte> memory, int width, int height, Channels channels, ColorSpace colorSpace = ColorSpace.SRgb)
     {
         Data = memory;
         Width = width;
