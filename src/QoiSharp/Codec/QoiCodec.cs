@@ -49,5 +49,5 @@ public static class QoiCodec
         => IsValidMagic(new ReadOnlySpan<byte>(magic, 0, 4));
 
     internal static bool IsValidMagic(ReadOnlySpan<byte> magic)
-        => BinaryPrimitives.ReadInt32BigEndian (magic) == Magic;
+        => BinaryPrimitives.ReadInt32BigEndian(magic) == Magic;
 }

@@ -1,8 +1,6 @@
 ﻿using QoiSharp.Codec;
 using QoiSharp.Exceptions;
 
-using System.Runtime.InteropServices;
-
 namespace QoiSharp;
 
 /// <summary>
@@ -86,7 +84,7 @@ public static class QoiDecoder
             else if ((b1 & QoiCodec.Mask2) == QoiCodec.Index)
             {
                 int indexPos = (b1 & ~QoiCodec.Mask2);
-                var value = index[indexPos];
+                uint value = index[indexPos];
                 r = (byte)(value >> 24);
                 g = (byte)(value >> 16);
                 b = (byte)(value >> 8);

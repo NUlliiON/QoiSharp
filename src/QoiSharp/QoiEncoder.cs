@@ -86,60 +86,58 @@ public static class QoiEncoder
                 }
                 continue;
             }
+
+            if (run > 0)
+            {
+                buffer[p++] = (byte)(QoiCodec.Run | (run - 1));
+                run = 0;
+            }
+
+            int indexPos = (rgba[0] * 3 + rgba[1] * 5 + rgba[2] * 7 + rgba[3] * 11) % QoiCodec.HashTableSize;
+            if (rgbaAsInt == index[indexPos])
+            {
+                buffer[p++] = (byte)(QoiCodec.Index | (indexPos));
+            }
             else
             {
-                if (run > 0)
-                {
-                    buffer[p++] = (byte)(QoiCodec.Run | (run - 1));
-                    run = 0;
-                }
+                index[indexPos] = rgbaAsInt;
 
-                int indexPos = (rgba[0] * 3 + rgba[1] * 5 + rgba[2] * 7 + rgba[3] * 11) % QoiCodec.HashTableSize;
-                if (rgbaAsInt == index[indexPos])
+                if (rgba[3] == prev[3])
                 {
-                    buffer[p++] = (byte)(QoiCodec.Index | (indexPos));
-                }
-                else
-                {
-                    index[indexPos] = rgbaAsInt;
+                    int vr = rgba[0] - prev[0];
+                    int vg = rgba[1] - prev[1];
+                    int vb = rgba[2] - prev[2];
 
-                    if (rgba[3] == prev[3])
+                    int vgr = vr - vg;
+                    int vgb = vb - vg;
+
+                    if (vr is > -3 and < 2 &&
+                        vg is > -3 and < 2 &&
+                        vb is > -3 and < 2)
                     {
-                        int vr = rgba[0] - prev[0];
-                        int vg = rgba[1] - prev[1];
-                        int vb = rgba[2] - prev[2];
-
-                        int vgr = vr - vg;
-                        int vgb = vb - vg;
-
-                        if (vr is > -3 and < 2 &&
-                            vg is > -3 and < 2 &&
-                            vb is > -3 and < 2)
-                        {
-                            counter++;
-                            buffer[p++] = (byte)(QoiCodec.Diff | (vr + 2) << 4 | (vg + 2) << 2 | (vb + 2));
-                        }
-                        else if (vgr is > -9 and < 8 &&
-                                 vg is > -33 and < 32 &&
-                                 vgb is > -9 and < 8
-                                )
-                        {
-                            buffer[p++] = (byte)(QoiCodec.Luma | (vg + 32));
-                            buffer[p++] = (byte)((vgr + 8) << 4 | (vgb + 8));
-                        }
-                        else
-                        {
-                            buffer[p++] = QoiCodec.Rgb;
-                            rgb.CopyTo(buffer.Slice(p));
-                            p += 3;
-                        }
+                        counter++;
+                        buffer[p++] = (byte)(QoiCodec.Diff | (vr + 2) << 4 | (vg + 2) << 2 | (vb + 2));
+                    }
+                    else if (vgr is > -9 and < 8 &&
+                             vg is > -33 and < 32 &&
+                             vgb is > -9 and < 8
+                            )
+                    {
+                        buffer[p++] = (byte)(QoiCodec.Luma | (vg + 32));
+                        buffer[p++] = (byte)((vgr + 8) << 4 | (vgb + 8));
                     }
                     else
                     {
-                        buffer[p++] = QoiCodec.Rgba;
-                        rgba.CopyTo(buffer.Slice(p));
-                        p += 4;
+                        buffer[p++] = QoiCodec.Rgb;
+                        rgb.CopyTo(buffer.Slice(p));
+                        p += 3;
                     }
+                }
+                else
+                {
+                    buffer[p++] = QoiCodec.Rgba;
+                    rgba.CopyTo(buffer.Slice(p));
+                    p += 4;
                 }
             }
             prevAsInt = rgbaAsInt;
