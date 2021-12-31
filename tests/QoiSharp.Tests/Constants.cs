@@ -5,7 +5,7 @@ public static class Constants
     /// <remarks>
     /// Images are taken from here (size ~ 1.1GB): https://qoiformat.org/benchmark/qoi_benchmark_suite.tar
     /// </remarks>
-    public const string RootImagesDirectory = @"E:\Tests\qoi_benchmark_suite\images";
+    public const string RootImagesDirectory = @"C:\qoi_benchmark_suite\images";
 
     public class Images
     {

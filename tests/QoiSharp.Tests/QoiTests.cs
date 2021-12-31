@@ -28,7 +28,7 @@ public class QoiTests
         
         // Assert
         var img = QoiDecoder.Decode(qoiData);
-        Assert.True(img.Data.SequenceEqual(qoiImage.Data));
+        Assert.True(img.Data.Span.SequenceEqual(qoiImage.Data.Span));
         img.Width.Should().Be(qoiImage.Width);
         img.Height.Should().Be(qoiImage.Height);
         img.Channels.Should().Be(qoiImage.Channels);
@@ -52,7 +52,7 @@ public class QoiTests
         
         // Assert
         var img = QoiDecoder.Decode(qoiData);
-        Assert.True(img.Data.SequenceEqual(qoiImage.Data));
+        Assert.True(img.Data.Span.SequenceEqual(qoiImage.Data.Span));
         img.Width.Should().Be(qoiImage.Width);
         img.Height.Should().Be(qoiImage.Height);
         img.Channels.Should().Be(qoiImage.Channels);
@@ -76,7 +76,7 @@ public class QoiTests
         var img = QoiDecoder.Decode(qoiData);
 
         // Assert
-        Assert.True(img.Data.SequenceEqual(qoiImage.Data));
+        Assert.True(img.Data.Span.SequenceEqual(qoiImage.Data.Span));
         img.Width.Should().Be(qoiImage.Width);
         img.Height.Should().Be(qoiImage.Height);
         img.Channels.Should().Be(qoiImage.Channels);
@@ -100,7 +100,7 @@ public class QoiTests
         var img = QoiDecoder.Decode(qoiData);
 
         // Assert
-        Assert.True(img.Data.SequenceEqual(qoiImage.Data));
+        Assert.True(img.Data.Span.SequenceEqual(qoiImage.Data.Span));
         img.Width.Should().Be(qoiImage.Width);
         img.Height.Should().Be(qoiImage.Height);
         img.Channels.Should().Be(qoiImage.Channels);

@@ -1,6 +1,9 @@
 ﻿using QoiSharp.Codec;
 using QoiSharp.Exceptions;
 
+using System.Buffers.Binary;
+using System.Runtime.InteropServices;
+
 namespace QoiSharp;
 
 /// <summary>
@@ -16,6 +19,12 @@ public static class QoiEncoder
     /// <exception cref="QoiEncodingException">Thrown when image information is invalid.</exception>
     public static byte[] Encode(QoiImage image)
     {
+        var bytes = new byte[QoiCodec.HeaderSize + QoiCodec.Padding.Length + (image.Width * image.Height * (byte)image.Channels)];
+        return bytes[..Encode(image, bytes)];
+    }
+
+    public static int Encode(QoiImage image, Span<byte> buffer)
+    {
         if (image.Width == 0)
         {
             throw new QoiEncodingException($"Invalid width: {image.Width}");
@@ -28,66 +37,44 @@ public static class QoiEncoder
 
         int width = image.Width;
         int height = image.Height;
-        byte channels = (byte)image.Channels;
+        int channels = (int)image.Channels;
         byte colorSpace = (byte)image.ColorSpace;
-        byte[] pixels = image.Data;
+        ReadOnlySpan<byte> pixels = image.Data.Span;
 
-        byte[] bytes = new byte[QoiCodec.HeaderSize + QoiCodec.Padding.Length + (width * height * channels)];
+        if (buffer.Length < QoiCodec.HeaderSize + QoiCodec.Padding.Length + (width * height * channels))
+            return -1;
 
-        bytes[0] = (byte)(QoiCodec.Magic >> 24);
-        bytes[1] = (byte)(QoiCodec.Magic >> 16);
-        bytes[2] = (byte)(QoiCodec.Magic >> 8);
-        bytes[3] = (byte)QoiCodec.Magic;
+        BinaryPrimitives.WriteInt32BigEndian(buffer, QoiCodec.Magic);
+        BinaryPrimitives.WriteInt32BigEndian(buffer.Slice(4), width);
+        BinaryPrimitives.WriteInt32BigEndian(buffer.Slice(8), height);
 
-        bytes[4] = (byte)(width >> 24);
-        bytes[5] = (byte)(width >> 16);
-        bytes[6] = (byte)(width >> 8);
-        bytes[7] = (byte)width;
+        buffer[12] = (byte)channels;
+        buffer[13] = colorSpace;
 
-        bytes[8] = (byte)(height >> 24);
-        bytes[9] = (byte)(height >> 16);
-        bytes[10] = (byte)(height >> 8);
-        bytes[11] = (byte)height;
+        Span<int> index = stackalloc int[QoiCodec.HashTableSize];
 
-        bytes[12] = channels;
-        bytes[13] = colorSpace;
+        Span<byte> prev = stackalloc byte[4] { 0, 0, 0, 255 };
+        Span<byte> rgba = stackalloc byte[4] { 0, 0, 0, 255 };
+        Span<byte> rgb = rgba.Slice(0, 3);
 
-        byte[] index = new byte[QoiCodec.HashTableSize * 4];
-
-        byte prevR = 0;
-        byte prevG = 0;
-        byte prevB = 0;
-        byte prevA = 255;
-
-        byte r = 0;
-        byte g = 0;
-        byte b = 0;
-        byte a = 255;
+        Span<int> prevAsInt = MemoryMarshal.Cast<byte, int>(prev);
+        Span<int> rgbaAsInt = MemoryMarshal.Cast<byte, int>(rgba);
 
         int run = 0;
-        int p = QoiCodec.HeaderSize;
-        bool hasAlpha = channels == 4;
-
-        int pixelsLength = width * height * channels;
-        int pixelsEnd = pixelsLength - channels;
         int counter = 0;
-
-        for (int pxPos = 0; pxPos < pixelsLength; pxPos += channels)
+        int p = QoiCodec.HeaderSize;
+        pixels = pixels.Slice(0, width * height * channels);
+        while (pixels.Length > 0)
         {
-            r = pixels[pxPos];
-            g = pixels[pxPos + 1];
-            b = pixels[pxPos + 2];
-            if (hasAlpha)
-            {
-                a = pixels[pxPos + 3];
-            }
+            pixels.Slice(0, channels).CopyTo(rgba);
+            pixels = pixels.Slice(channels);
 
-            if (RgbaEquals(prevR, prevG, prevB, prevA, r, g, b, a))
+            if (prevAsInt[0] == rgbaAsInt[0])
             {
                 run++;
-                if (run == 62 || pxPos == pixelsEnd)
+                if (run == 62 || pixels.Length == 0)
                 {
-                    bytes[p++] = (byte)(QoiCodec.Run | (run - 1));
+                    buffer[p++] = (byte)(QoiCodec.Run | (run - 1));
                     run = 0;
                 }
             }
@@ -95,28 +82,24 @@ public static class QoiEncoder
             {
                 if (run > 0)
                 {
-                    bytes[p++] = (byte)(QoiCodec.Run | (run - 1));
+                    buffer[p++] = (byte)(QoiCodec.Run | (run - 1));
                     run = 0;
                 }
 
-                int indexPos = QoiCodec.CalculateHashTableIndex(r, g, b, a);
-
-                if (RgbaEquals(r, g, b, a, index[indexPos], index[indexPos + 1], index[indexPos + 2], index[indexPos + 3]))
+                int indexPos = (rgba[0] * 3 + rgba[1] * 5 + rgba[2] * 7 + rgba[3] * 11) % QoiCodec.HashTableSize;
+                if (rgbaAsInt[0] == index[indexPos])
                 {
-                    bytes[p++] = (byte)(QoiCodec.Index | (indexPos / 4));
+                    buffer[p++] = (byte)(QoiCodec.Index | (indexPos));
                 }
                 else
                 {
-                    index[indexPos] = r;
-                    index[indexPos + 1] = g;
-                    index[indexPos + 2] = b;
-                    index[indexPos + 3] = a;
+                    index[indexPos] = rgbaAsInt[0];
 
-                    if (a == prevA)
+                    if (rgba[3] == prev[3])
                     {
-                        int vr = r - prevR;
-                        int vg = g - prevG;
-                        int vb = b - prevB;
+                        int vr = rgba[0] - prev[0];
+                        int vg = rgba[1] - prev[1];
+                        int vb = rgba[2] - prev[2];
 
                         int vgr = vr - vg;
                         int vgb = vb - vg;
@@ -126,49 +109,37 @@ public static class QoiEncoder
                             vb is > -3 and < 2)
                         {
                             counter++;
-                            bytes[p++] = (byte)(QoiCodec.Diff | (vr + 2) << 4 | (vg + 2) << 2 | (vb + 2));
+                            buffer[p++] = (byte)(QoiCodec.Diff | (vr + 2) << 4 | (vg + 2) << 2 | (vb + 2));
                         }
                         else if (vgr is > -9 and < 8 &&
                                  vg is > -33 and < 32 &&
-                                 vgb is > -9 and < 8
-                                )
+                                 vgb is > -9 and < 8)
                         {
-                            bytes[p++] = (byte)(QoiCodec.Luma | (vg + 32));
-                            bytes[p++] = (byte)((vgr + 8) << 4 | (vgb + 8));
+                            buffer[p++] = (byte)(QoiCodec.Luma | (vg + 32));
+                            buffer[p++] = (byte)((vgr + 8) << 4 | (vgb + 8));
                         }
                         else
                         {
-                            bytes[p++] = QoiCodec.Rgb;
-                            bytes[p++] = r;
-                            bytes[p++] = g;
-                            bytes[p++] = b;
+                            buffer[p++] = QoiCodec.Rgb;
+                            rgb.CopyTo(buffer.Slice(p));
+                            p += 3;
                         }
                     }
                     else
                     {
-                        bytes[p++] = QoiCodec.Rgba;
-                        bytes[p++] = r;
-                        bytes[p++] = g;
-                        bytes[p++] = b;
-                        bytes[p++] = a;
+                        buffer[p++] = QoiCodec.Rgba;
+                        rgba.CopyTo(buffer.Slice(p));
+                        p += 4;
                     }
                 }
             }
-
-            prevR = r;
-            prevG = g;
-            prevB = b;
-            prevA = a;
+            prevAsInt[0] = rgbaAsInt[0];
         }
 
-        for (int padIdx = 0; padIdx < QoiCodec.Padding.Length; padIdx++)
-        {
-            bytes[p + padIdx] = QoiCodec.Padding[padIdx];
-        }
-
+        QoiCodec.Padding.Span.CopyTo(buffer.Slice(p));
         p += QoiCodec.Padding.Length;
 
-        return bytes[..p];
+        return p;
     }
 
     private static bool RgbaEquals(byte r1, byte g1, byte b1, byte a1, byte r2, byte g2, byte b2, byte a2) =>

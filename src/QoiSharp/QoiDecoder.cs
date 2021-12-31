@@ -14,14 +14,14 @@ public static class QoiDecoder
     /// <param name="data">QOI data</param>
     /// <returns>Decoding result.</returns>
     /// <exception cref="QoiDecodingException">Thrown when data is invalid.</exception>
-    public static QoiImage Decode(byte[] data)
+    public static QoiImage Decode(ReadOnlySpan<byte> data)
     {
         if (data.Length < QoiCodec.HeaderSize + QoiCodec.Padding.Length)
         {
             throw new QoiDecodingException("File too short");
         }
         
-        if (!QoiCodec.IsValidMagic(data[..4]))
+        if (!QoiCodec.IsValidMagic(data.Slice(0, 4)))
         {
             throw new QoiDecodingException("Invalid file magic"); // TODO: add magic value
         }
@@ -129,15 +129,9 @@ public static class QoiDecoder
             }
         }
         
-        int pixelsEnd = data.Length - QoiCodec.Padding.Length;
-        for (int padIdx = 0; padIdx < QoiCodec.Padding.Length; padIdx++) 
-        {
-            if (data[pixelsEnd + padIdx] != QoiCodec.Padding[padIdx]) 
-            {
-                throw new InvalidOperationException("Invalid padding");
-            }
-        }
+        if (!QoiCodec.Padding.Span.SequenceEqual(data.Slice(data.Length - QoiCodec.Padding.Length)))
+            throw new InvalidOperationException("Invalid padding");
 
-        return new QoiImage(pixels, width, height, (Channels)channels, colorSpace);
+        return QoiImage.FromMemory(pixels, width, height, (Channels)channels, colorSpace);
     }
 }
