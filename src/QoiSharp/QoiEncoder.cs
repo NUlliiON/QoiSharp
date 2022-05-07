@@ -32,7 +32,7 @@ public static class QoiEncoder
         byte colorSpace = (byte)image.ColorSpace;
         byte[] pixels = image.Data;
 
-        byte[] bytes = new byte[QoiCodec.HeaderSize + QoiCodec.Padding.Length + (width * height * channels)];
+        byte[] bytes = new byte[QoiCodec.HeaderSize + QoiCodec.Padding.Length + (width * height * (channels + 1))];
 
         bytes[0] = (byte)(QoiCodec.Magic >> 24);
         bytes[1] = (byte)(QoiCodec.Magic >> 16);
